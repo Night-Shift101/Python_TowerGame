@@ -2,8 +2,11 @@ import pickle
 from os import walk
 import os
 
-def saveNameValidator(name):
+def saveNameValidator(name: str = None):
+    if not name:
+        return False
     files = []
+    name = str(name)
     for (dirpath, dirnames, filenames) in walk('saves/'):
         files.extend(filenames)
         break
@@ -11,9 +14,23 @@ def saveNameValidator(name):
         return False
     else:
         return True
-
+def saveExists(name: str = None):
+    if not name:
+        return False
+    files = []
+    name = str(name)
+    for (dirpath, dirnames, filenames) in walk('saves/'):
+        files.extend(filenames)
+        break
+    if name.lower()+".dat" in files:
+        return True
+    else:
+        return False
 class SaveFile:
     def __init__(self, floor_manager, player_manager, enemy_manager):
+        if floor_manager is None or player_manager is None or enemy_manager is None:
+            raise ValueError("Floor, Player, and Enemy managers must not be None.")
+            del(self)
         self.floor_manager = floor_manager
         self.player_manager = player_manager
         self.enemy_manager = enemy_manager
@@ -31,12 +48,18 @@ class SaveManager:
         try:
             with open(f'saves/{self.saveId}.dat', 'rb') as f:
                 self.saveFile = pickle.load(f)
+                print(self.saveFile)
                 if not isinstance(self.saveFile, SaveFile):
-                    raise ValueError("Invalid save file format")
+                     print("Invalid save file format")
+                     return None
+                elif self.saveFile is None:
+                    print(f"Save file {self.saveId}.dat is empty or corrupted.")
+                    return None
                 else:
                     return self.saveFile
-        except FileNotFoundError:
-            print(f"Save file {self.saveId}.dat not found.")
+        except:
+            print(f"Save file {self.saveId}.dat is empty or corrupted.")
+            
             
     def save(self, player, floor, enemies):
         self.saveFile = SaveFile(floor, player, enemies)

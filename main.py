@@ -5,6 +5,9 @@ from classes.save_manager import SaveManager
 from classes.save_manager import saveNameValidator
 from classes.input_manager import ResponseValidator
 
-print("Welcome to the game!")
-ResponseValidator("What should we call you?\n> ").strValidate(min_word_length=1,max_word_length=1,allowNumbers=False)
 
+save = SaveManager("save1")
+floor, player, enemys = save.pull().returnData()
+print(floor.floor_number)
+print(player.name)
+print(enemys.name)

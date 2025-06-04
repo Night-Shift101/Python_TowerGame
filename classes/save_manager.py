@@ -25,8 +25,7 @@ class SaveManager:
     def __init__(self, saveId):
         self.saveId = saveId.lower()
         self.saveFile = None
-        if not saveNameValidator(saveId):
-            raise ValueError("Save file name already exists or is invalid.")
+
     
     def pull(self):
         try:

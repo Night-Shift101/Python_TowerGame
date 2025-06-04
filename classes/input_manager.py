@@ -15,6 +15,7 @@ class ResponseValidator:
                 return noReturnValue
             else:
                 print("Invalid response. Please answer with 'yes' or 'no'.")
+
     def intValidate(self, min_value=None, max_value=None):
         while True:
             try:
@@ -25,7 +26,9 @@ class ResponseValidator:
                     return response
             except ValueError:
                 print("Invalid input. Please enter a valid integer.")
-    def strValidate(self, min_char_length=0, max_char_length=float('inf'), min_word_length=0, max_word_length=float('inf'), regex=None, rexexFailiedMessage=None, allowNumbers=False, allowOnlyNumbers=False):
+
+    def strValidate(self, allow_special_chars = True, min_char_length=0, max_char_length=float('inf'), min_word_length=0, max_word_length=float('inf'), regex=None, rexexFailiedMessage=None, allowNumbers=True, allowOnlyNumbers=False):
+        special_chars = ["!", '"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"]
         if regex is not None:
             import re
             pattern = re.compile(regex)
@@ -33,6 +36,10 @@ class ResponseValidator:
             pattern = None
         while True:
             response = input(self.prompt).strip()
+            if not allow_special_chars:
+                if any(char in response for char in special_chars):
+                    print("Input may not contain special characters.")
+                    continue
             if len(response) < min_char_length:
                 print(f"Input must be at least {min_char_length} characters long.")
             elif len(response) > max_char_length:
@@ -52,3 +59,26 @@ class ResponseValidator:
                     print("Input does not match the required format.")
             else:
                 return response
+    def listValidate(self, valid_options, case_sensitive=False):
+        while True:
+            response = input(self.prompt).strip()
+            if not case_sensitive:
+                response = response.lower()
+                valid_options = [option.lower() for option in valid_options]
+            if response in valid_options:
+                return response
+            else:
+                print(f"Invalid input. Please choose from: {', '.join(valid_options)}")
+    
+    def floatValidate(self, min_value=None, max_value=None):
+        while True:
+            try:
+                response = float(input(self.prompt).strip())
+                if (min_value is not None and response < min_value) or (max_value is not None and response > max_value):
+                    print(f"Please enter a number between {min_value} and {max_value}.")
+                else:
+                    return response
+            except ValueError:
+                print("Invalid input. Please enter a valid float.")
+    
+

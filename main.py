@@ -3,6 +3,8 @@ from classes.save_manager import SaveManager, SaveFile
 from classes.input_manager import ResponseValidator
 from classes.save_manager import saveNameValidator, saveExists
 
+from classes.games.blackjack import BlackJack
+
 from functions.save_functions import loadFromSaveFunc, newSaveFunc
 from functions.utils import clearScreen
 
@@ -17,5 +19,10 @@ if not loadFromSave:
     gamePlayer = newSaveFunc()
     SaveManager(gamePlayer.name).save(gamePlayer)
 
-print(gamePlayer.name)
+while True:
+    BlackJack(gamePlayer)
+    SaveManager(gamePlayer.name).save(gamePlayer)
+    print(gamePlayer.statistics)
+    print(gamePlayer.bank)
+
 

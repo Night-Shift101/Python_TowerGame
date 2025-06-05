@@ -25,18 +25,18 @@ def saveExists(name: str = None):
     if name.lower()+".dat" in files:
         return True
     else:
+        print("[Save Manager] Save not found")
         return False
 class SaveFile:
-    def __init__(self, floor_manager, player_manager, enemy_manager):
-        if floor_manager is None or player_manager is None or enemy_manager is None:
-            raise ValueError("Floor, Player, and Enemy managers must not be None.")
-            del(self)
-        self.floor_manager = floor_manager
+    def __init__(self, player_manager):
+        if  player_manager is None:
+            print("[Save Manager] Error, one or more managers are None, unable to load/create save file.")
+            del self
+            return
         self.player_manager = player_manager
-        self.enemy_manager = enemy_manager
         pass
     def returnData(self):
-        return self.floor_manager, self.player_manager, self.enemy_manager
+        return self.player_manager
 
 class SaveManager:
     def __init__(self, saveId):
@@ -44,11 +44,10 @@ class SaveManager:
         self.saveFile = None
 
     
-    def pull(self):
+    def pull(self):   
         try:
             with open(f'saves/{self.saveId}.dat', 'rb') as f:
                 self.saveFile = pickle.load(f)
-                print(self.saveFile)
                 if not isinstance(self.saveFile, SaveFile):
                      print("Invalid save file format")
                      return None
@@ -57,15 +56,17 @@ class SaveManager:
                     return None
                 else:
                     return self.saveFile
-        except:
+        except Exception as e:
+            print(f"Error loading save file: {e}")
             print(f"Save file {self.saveId}.dat is empty or corrupted.")
             
             
-    def save(self, player, floor, enemies):
-        self.saveFile = SaveFile(floor, player, enemies)
+    def save(self, player):
+        self.saveFile = SaveFile(player)
         try:
             with open(f'saves/{self.saveId}.dat', 'wb') as f:
                 pickle.dump(self.saveFile, f)
+                print(f'[Save Manager] \"saves/{self.saveId}.dat\" was saved successfully.')
         except Exception as e:
             print(f"Error saving file: {e}")
 

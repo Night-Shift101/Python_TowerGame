@@ -1,6 +1,7 @@
 import pickle
 from os import walk
 import os
+import time
 
 def saveNameValidator(name: str = None):
     if not name:
@@ -67,8 +68,11 @@ class SaveManager:
             with open(f'saves/{self.saveId}.dat', 'wb') as f:
                 pickle.dump(self.saveFile, f)
                 print(f'[Save Manager] \"saves/{self.saveId}.dat\" was saved successfully.')
+                time.sleep(3)
         except Exception as e:
             print(f"Error saving file: {e}")
+            time.sleep(3)
+
 
 
 
